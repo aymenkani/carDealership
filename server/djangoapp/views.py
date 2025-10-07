@@ -18,7 +18,7 @@ from .populate import initiate
 logger = logging.getLogger(__name__)
 
 
-# Create your views here.
+
 
 
 # Create a `login_request` view to handle sign in request
