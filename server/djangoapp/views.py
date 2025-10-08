@@ -24,7 +24,7 @@ def get_cars(request):
     for car_model in car_models:
         cars.append(
             {
-                "CarModel": car_model.name, 
+                "CarModel": car_model.name,
                 "CarMake": car_model.car_make.name})
     return JsonResponse({"CarModels": cars})
 
@@ -68,7 +68,7 @@ def registration(request):
         # Check if user already exists
         User.objects.get(username=username)
         username_exist = True
-    except Exception as e:
+    except Exception:
         # If not, simply log this is a new user
         logger.debug("{} is new user".format(username))
     # If it is a new user
@@ -84,12 +84,12 @@ def registration(request):
         # Login the user and redirect to list page
         login(request, user)
         data = {
-            "userName": username, 
+            "userName": username,
             "status": "Authenticated"}
         return JsonResponse(data)
     else:
         data = {
-            "userName": username, 
+            "userName": username,
             "error": "Already Registered"}
         return JsonResponse(data)
 
@@ -103,7 +103,7 @@ def get_dealerships(request, state="All"):
         endpoint = "/fetchDealers/" + state
     dealerships = get_request(endpoint)
     return JsonResponse({
-        "status": 200, 
+        "status": 200,
         "dealers": dealerships})
 
 
@@ -140,14 +140,14 @@ def add_review(request):
         try:
             post_review(data)
             return JsonResponse({"status": 200})
-        except Exception as e:
+        except Exception:
             return JsonResponse(
                 {
-                    "status": 401, 
+                    "status": 401,
                     "message": "Error in posting review"
                 })
     else:
         return JsonResponse({
-            "status": 403, 
+            "status": 403,
             "message": "Unauthorized"
         })
