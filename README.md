@@ -88,3 +88,55 @@ Each component is independently deployable and communicates through well-defined
 - /django-service → Django microservice (core gateway)
 - /node-service → Node.js microservice (dealers and reviews)
 - /sentiment-service → AI sentiment analyzer microservice
+
+---
+
+## 🐳 Run the Application in a Container
+You can run the Car Dealership application inside a Docker container or deploy it to Kubernetes for a production-like environment.
+
+### 1. Build the Docker Image
+   
+   Make sure you’re in the project’s **server** directory where the `Dockerfile` is located.
+   ```
+      docker build -t dealership-app .
+   ```
+   
+   If you’re using a container registry (for example, IBM Cloud Container Registry):
+   ```
+   export MY_NAMESPACE=<your-namespace>
+   docker tag dealership-app us.icr.io/$MY_NAMESPACE/dealership
+   docker push us.icr.io/$MY_NAMESPACE/dealership
+   ```
+
+### 2. Run the Container Locally
+   To test the app locally using Docker:
+   ```
+   docker run -p 8000:8000 dealership-app
+   ```
+   This exposes the Django application on http://localhost:8000
+
+### 3. Deploy to Kubernetes
+   
+   If you have Kubernetes configured (for example, with IBM Cloud Code Engine or Minikube):<br/>
+        
+   1. Update the image name in deployment.yaml (inside the server directory) to match your image path.<br/>
+   
+   ```yaml
+   image: us.icr.io/<your-namespace>/dealership:latest
+   ```
+   2. Apply the deployment file:<br/>
+   ```
+   kubectl apply -f deployment.yaml
+   ```
+   3. Forward the container port to access the app:<br/>
+   ```
+   kubectl port-forward deployment.apps/dealership 8000:8000
+   ```
+   You can now open http://localhost:8000 to view the application.<br/>
+
+### 5. Notes
+   * The container automatically runs database migrations and collects static files on startup (as defined in `entrypoint.sh`)
+
+   * If you have the frontend and microservices separated, make sure their URLs are correctly configured in the environment variables
+
+   * To rebuild or update the container, simply re-run the docker build and kubectl apply commands
